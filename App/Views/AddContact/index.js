@@ -15,10 +15,18 @@ const AddContact = ({navigation}) => {
   const [name, setName] = useState('');
   const [contacts, setContacts] = useState([]);
   
+  // Used this hook for setting the contacts and the new added contact in to the local state to show in the list.
   useEffect(()=>{
     setContacts(getContacts);
   },[getContacts]);
 
+  /**
+   * addNewContact : To Add a New Contact in to the Contacts List
+   * @Features : Checks if name and phone state variables are having values or not. If Not then either the contact details filled or selected from the 
+   * phone's contact gets added in to the pre provided contact list by dispatching (addContact) action after checking if the number to be provoded exists 
+   * in the contacts or not.  
+   * @returns 
+   */
   const addNewContact = () => {
     if(name == ""){
       Toast.show({
@@ -50,6 +58,11 @@ const AddContact = ({navigation}) => {
     }
   }
 
+  /**
+   * onChangeeText : Sets value sof name and phone on having an onChange event triggered on TextInputs.
+   * @param {*} value 
+   * @param {*} setFor 
+   */
   var onChangeeText = (value, setFor) => {
     if(setFor == "number"){
       setPhone(value);
@@ -59,20 +72,24 @@ const AddContact = ({navigation}) => {
     }
   }
 
+  /**
+   * getPhoneNumber : A function to get phone number list in which we pick one contact to add in to the list and dispatch action (addContact)
+   * @returns 
+   */
   var getPhoneNumber = () => {
     return selectContactPhone()
-        .then(selection => {
-            if (!selection) {
-                return null;
-            }
+      .then(selection => {
+        if (!selection) {
+          return null;
+        }
             
-            let { contact, selectedPhone } = selection;
-            console.log(`Selected ${selectedPhone.type} phone number ${selectedPhone.number} from ${contact.name}`);
-            dispatch(addContact({"name":contact.name, "phone":selectedPhone.number}));
-            navigation.goBack();
-            return selectedPhone.number;
-        });  
-}
+        let { contact, selectedPhone } = selection;
+        console.log(`Selected ${selectedPhone.type} phone number ${selectedPhone.number} from ${contact.name}`);
+        dispatch(addContact({"name":contact.name, "phone":selectedPhone.number}));
+        navigation.goBack();
+        return selectedPhone.number;
+    });  
+  }
   
 
   return (

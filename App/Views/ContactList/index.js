@@ -1,3 +1,8 @@
+/**
+ * The Contact list screen where we're having a list for pre-stored contacts.
+ * Below the list we have a button to add a new contact.
+ */
+
 import React, {useEffect, useState} from 'react';
 import {View,Text,ScrollView,Pressable, TouchableOpacity, ImageBackground, Image, FlatList, Modal, TextInput, SafeAreaView} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -10,19 +15,32 @@ const ContactList = ({navigation}) => {
   const dispatch = useDispatch();
   const getContacts = useSelector(state=>state.appEnv.contacts);
   const [contacts, setContacts] = useState([]);
-  const [phone, setPhone] = useState('');
-  const [name, setName] = useState('');
-
+  
+  /**
+   * IsEmpty:  This checks if the given value is [NULL || UNDEFINED || BLANK STRING || BLANK OBJECT ].
+   * @Feature : Used in this file to check if the state variable (contacts) is AWAY from all the above mentioned cases.
+   * @param {*} value 
+   * @returns 
+   */
   const IsEmpty = value =>
   value === undefined ||
   value === null ||
   (typeof value === 'object' && Object.keys(value).length === 0) ||
   (typeof value === 'string' && value.trim().length === 0);
   
+  // Used this hook for setting the contacts and the new added contact in to the local state to show in the list.
   useEffect(()=>{
     setContacts(getContacts);
   },[getContacts]);
 
+  /**
+   * deleteAContact : Delete a contact (By selected index, as per the design)
+   * 
+   * @feature : It dispatches an action (deleteContact) after cherrypicking the provided index and removing it (splice()) from the 
+   * state (contacts) and updating in to setContact();
+   *  
+   * @param {*} index 
+   */
   const deleteAContact = (index) => {
     getContacts.splice(index, 1);
     if (!IsEmpty(getContacts) && getContacts.length !== 0) {
@@ -33,6 +51,11 @@ const ContactList = ({navigation}) => {
     dispatch(deleteContact(getContacts));
   }
 
+  /**
+   * renderContact : Renders a contact card.It is just a common component (Contact card) created for Flatlist data Rendering.
+   * @param {*} data 
+   * @returns 
+   */
   const renderContact = (data) => {
     return <View style={[Theme.selectedItems]}>
       <View style={[Theme.row, Theme.commonParent]}>
@@ -70,6 +93,7 @@ const ContactList = ({navigation}) => {
           <Icon name="info" size={30} color={'#1b73bb'} />
         </View>
         <View>
+          {/* Checked if the state variable contacts is [NULL || UNDEFINED || BLANK STRING || BLANK OBJECT ] */}
           {!IsEmpty(contacts) ?
             <FlatList
               data={contacts}
